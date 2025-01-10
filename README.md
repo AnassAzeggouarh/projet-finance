@@ -58,9 +58,10 @@ lines(Walmart_100, col = "purple", lwd = 2)
 lines(Meta_100, col = "cyan", lwd = 2)
 lines(Nvidia_100, col = "yellow", lwd = 2)
 
-legend(
-  "topleft", legend = c("Apple", "Walmart", "Meta", "Nvidia"),
-  col = c("blue", "purple", "cyan", "yellow"), lty = 1, cex = 0.8)
+addLegend("topleft",on=1,
+          legend.names=c("Apple","Walmart",'Meta','Nvidia'),
+          col=c("blue","purple","cyan","yellow"),
+          lty = 1:1, cex=0.8)
 ```
 On voit que NVIDIA est l'actif le plus performant en 2024 du point de vue sa base 100 ce qui n'est pas surprenant. 
 En 2024, NVIDIA a réalisé une performance exceptionnelle, enregistrant des résultats financiers records, portés par une demande mondiale croissante en intelligence artificielle. L'entreprise s'est également hissée à la deuxième place mondiale en termes de capitalisation boursière, consolidant ainsi sa position de leader dans le secteur des semi-conducteurs.
@@ -82,10 +83,10 @@ lines(returns[, "walmart"], col = "purple")
 lines(returns[, "meta"], col = "cyan")
 lines(returns[, "nvidia"], col = "yellow")
 
-legend(
-  "topleft", legend = c("Apple", "Walmart", "Meta", "Nvidia"),
-  col = c("blue", "purple", "cyan", "yellow"), lty = 1, cex = 0.8
-)
+addLegend("topleft",on=1,
+          legend.names=c("Apple","Walmart",'Meta','Nvidia'),
+          col=c("blue","purple","cyan","yellow"),
+          lty = 1:1, cex=0.8)
 ```
 on voit a travers le graphique que Meta est l'action la plus volatile des quatre.
 
