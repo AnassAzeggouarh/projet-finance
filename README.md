@@ -22,9 +22,12 @@ Dans un premier temps, nous téléchargeons les librairies nécessaires et impor
 library(quantmod)
 library(quadprog)
 
+#Télécharger les données des actifs via une commande qui importe tout de yahoo finance
 
 tickers <- c("AAPL", "WMT", "META", "NVDA")
 getSymbols(tickers, src = "yahoo", from = "2024-01-01", to = "2025-01-01")
+
+#Extraction des prix ajustés et on les stock dans une base "prices"
 
 prices <- merge(
   AAPL[, "AAPL.Adjusted"],
@@ -33,13 +36,14 @@ prices <- merge(
   NVDA[, "NVDA.Adjusted"]
 )
 
+#on renomme les colonnes avec des noms respectifs pour que ça soit plus clair
+
 colnames(prices) <- c("apple", "walmart", "meta", "nvidia")
 ```
 ### 2.2 base 100
 Nous utilisons la base 100 pour comparer facilement l'évolution des actifs sur la même échelle. Cela permet de ramener toutes les entreprises à un point de départ commun (100) et de visualiser leurs performances relatives dans le temps, peu importe leur prix initial.
 Cela va permettre de voir quel actif a le mieux performé en 2024 du point de vue de la base 100.
-
-
+Les lignes Apple_100, Walmart_100, Meta_100 et Nvidia_100 normalisent les prix des actions respectives à une base 100, en divisant chaque valeur par le prix initial (première ligne de la colonne correspondante) et en multipliant par 100, ce qui permet ainsi de comparer leur évolution relative. Ensuite, le graphique représente l'évolution des prix normalisés pour chaque action avec des lignes colorées, et la légende associée identifie chaque courbe.
 ```{r}
 Apple_100 <- prices[, "apple"] / as.vector(prices[1, "apple"]) * 100
 Walmart_100 <- prices[, "walmart"] / as.vector(prices[1, "walmart"]) * 100
@@ -63,6 +67,7 @@ En 2024, NVIDIA a réalisé une performance exceptionnelle, enregistrant des ré
 
 ### 2.3 calcul des rendements et de la volatilité
 Nous allons maintenant calculer les rendements journaliers des actions ainsi que leur volatilité (écart-type des rendements) afin d'analyser statistiquement le comportement de ces actifs en 2024. Ensuite, nous représenterons graphiquement les rendements pour mieux visualiser leur évolution au cours de l'année.
+Le code calcule les rendements des actions (`returns`) en utilisant la méthode des rendements discrets via la fonction `ROC` (Rate of Change) et supprime les valeurs manquantes avec `na.omit`, avant de renommer les colonnes pour chaque action. Le graphique affiche l'évolution des rendements des actions dans le temps avec des lignes colorées, et une légende identifie chaque courbe.
 
 ```{r}
 returns <- na.omit(ROC(prices, type = "discrete"))
@@ -166,6 +171,7 @@ barplot(
 sharpe_ratio <- (portfolio_return_min_var) / portfolio_risk_min_var
 sharpe_ratio
 ```
+le code de la fonction `barplot` crée un graphique en barres coloré qui montre comment les actions Apple, Walmart, Meta et Nvidia sont réparties dans un portefeuille optimisé pour minimiser le risque, en affichant leurs poids en pourcentage.
 l'allocation optimale est 4.86% pour Apple, 72.55% Walmart, 4.09% pour Meta et 18.51% Nvidia. 
 Le rendement attendu du portefeuille est de 0.00263478, ce qui dépasse celui de toutes les actions, à l'exception de Nvidia. Par ailleurs, le risque du portefeuille, mesuré par une volatilité de 0.01063863, est inférieur à celle de tous les actifs pris individuellement. De plus, le ratio de Sharpe du portefeuille, évalué à 0.2476616, est nettement supérieur à tous les ratios individuels. Cela démontre l’efficacité de l’optimisation, qui a permis d’améliorer à la fois le rendement ajusté au risque et la diversification. 
 
@@ -216,6 +222,7 @@ allocation <- round(weights_min_var * 500, 2)
 names(allocation) <- c("apple", "walmart", "meta", "nvidia")
 print(allocation)
 ```
+Ce code calcule l'allocation en dollars pour chaque action dans un portefeuille de 500 unités monétaires basé sur les poids à variance minimale. Les montants sont arrondis à deux décimales, puis associés aux noms des actions Apple, Walmart, Meta et Nvidia avant d'être affichés.
 Avec un budget de 500 euros, la majorité est investie dans Walmart (362,73 €) en raison de sa faible volatilité, suivi de Nvidia (92,53 €) pour son rendement élevé. Apple (24,31 €) et Meta (20,43 €) ont des allocations plus faibles, reflétant leur profil rendement/risque.
 
 
