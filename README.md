@@ -239,8 +239,6 @@ Le modèle accorde également le même poids aux rendements positifs et négatif
 
 Malgré ces limites, le modèle de Markowitz a ouvert la voie à des approches plus modernes. Par exemple, le modèle de Black-Litterman intègre non seulement les données historiques, mais aussi les prévisions des investisseurs, offrant ainsi des allocations plus équilibrées et réalistes. D’autres avancées, comme les simulations Monte Carlo ou les optimisations prenant en compte les risques extrêmes, répondent aux défis des marchés actuels. Ces évolutions montrent que, bien que perfectible, le modèle de Markowitz reste une base solide pour comprendre et gérer les portefeuilles.
 
-
-
-
+Concernant les limites de notre présentation, nous n'avons pas abordé la frontière efficiente en raison d'un manque de connaissances approfondies sur le sujet. Nous avons choisi de ne pas traiter une théorie que nous ne maîtrisons pas suffisamment, bien qu'elle constitue une hypothèse fondamentale du modèle.
 
 
