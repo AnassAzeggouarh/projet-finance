@@ -1,3 +1,12 @@
+---
+title: "Projet technique de programmation"
+author: "Anass Azeggouarh-Wallen et Mamadou Giuliano"
+date: "2025-01-09"
+output:
+  html_document: default
+  pdf_document: default
+---
+
 # Construction d’un portefeuille optimisé en R 
 
 
