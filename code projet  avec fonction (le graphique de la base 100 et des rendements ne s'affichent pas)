@@ -120,9 +120,10 @@ run_project <- function() {
   cat("Rendement attendu :", portfolio_return_min_var, "\n")
   cat("Risque attendu :", portfolio_risk_min_var, "\n")
   
-  # Calcul du ratio de Sharpe
+  # ratio de sharpe du portefeuille optimisé 
   sharpe_ratio <- (portfolio_return_min_var) / portfolio_risk_min_var
-  sharpe_ratio
+  cat("\nRatio de Sharpe du portefeuille optimisé :\n")
+  print(sharpe_ratio)
   
   
   # Graphique pour une visualisation des résultats
