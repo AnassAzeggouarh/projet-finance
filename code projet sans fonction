@@ -122,11 +122,6 @@ cat("Portefeuille à variance minimale :\n")
 cat("Rendement attendu :", portfolio_return_min_var, "\n")
 cat("Risque attendu :", portfolio_risk_min_var, "\n")
 
-# calcul du ratio de sharpe
-sharpe_ratio <- (portfolio_return_min_var) / portfolio_risk_min_var
-cat("\nRatio de Sharpe pour chaque actif :\n")
-print(ratio_sharpe)
-
 
 # Graphique pour une visualisation des résultats
 barplot(
@@ -138,6 +133,10 @@ barplot(
 )
 round(weights_min_var * 100, 2)
 
+# ratio de sharpe du portefeuille
+sharpe_ratio <- (portfolio_return_min_var) / portfolio_risk_min_var
+cat("\nRatio de Sharpe pour chaque actif :\n")
+print(ratio_sharpe)
 
 
 ###### annualisation des résultats 
