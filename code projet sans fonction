@@ -211,8 +211,11 @@ legend(
 )
 
 
+
 ###### Allocation par actif pour un budget de 500 euros
 allocation <- round(weights_min_var * 500, 2)
 names(allocation) <-c("apple", "walmart", "meta", "nvidia")
-print(allocation)
+
+cat("### Allocation des actifs ###\n")
+cat(paste(names(allocation), ":", allocation, collapse = "\n"), "\n")
 
