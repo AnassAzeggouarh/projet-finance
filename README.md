@@ -23,7 +23,7 @@ En étudiant ces entreprises sur la période 2024-2025, nous souhaitons mieux co
 
 ### 2.1 Librairies et importation des données
 
-Dans un premier temps, nous téléchargeons les librairies nécessaires et importons les données directement depuis Yahoo Finance pour constituer une base contenant les prix ajustés des actifs. Ensuite, nous renommons les colonnes afin d'utiliser les noms réels des entreprises, plutôt que les tickers Yahoo Finance.
+Dans un premier temps, nous téléchargeons les librairies nécessaires et importons les données directement depuis Yahoo Finance pour constituer une base contenant les prix ajustés des actifs. Ensuite, nous renommons les colonnes afin d'utiliser les noms réels des entreprises, plutôt que les tickers Yahoo Finance. Puis pour finir avec les fonctions head et summary, nous observons les données d'un point de vue statistique.  
 
 ```{r, message=FALSE}
 library(quantmod)
@@ -46,7 +46,13 @@ prices <- merge(
 #on renomme les colonnes avec des noms respectifs pour que ça soit plus clair
 
 colnames(prices) <- c("apple", "walmart", "meta", "nvidia")
+
+# vue d'ensemble sur les données des prix
+head(prices)
+summary(prices)
 ```
+
+
 ### 2.2 La Base 100
 Nous utilisons la base 100 pour comparer facilement l'évolution des actifs sur la même échelle. Cela permet de ramener toutes les entreprises à un point de départ commun (100) et de visualiser leurs performances relatives dans le temps, peu importe leur prix initial.
 Cela va permettre de voir quel actif a le mieux performé en 2024 du point de vue de la base 100.
@@ -80,6 +86,9 @@ Le code calcule les rendements des actions (`returns`) en utilisant la méthode 
 ```{r}
 returns <- na.omit(ROC(prices, type = "discrete"))
 colnames(returns) <- c("apple", "walmart", "meta", "nvidia")
+
+# vue d'ensemble sur les données des rendements
+head(returns)
 summary(returns)
 
 plot(
