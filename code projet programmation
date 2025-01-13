@@ -1,13 +1,19 @@
-# Nettoyage de l'environnement
+#version finale###########################################################
+
+
+############# Analyse quantitative 
+
 rm(list = ls())
 
 # Chargement des librairies nécessaires
 library(quantmod)
 library(quadprog)
 
-# Étape 1 : Télécharger les données des actifs
+
+# Télécharger les données des actifs
 tickers <- c("AAPL", "WMT", "META", "NVDA")
 getSymbols(tickers, src = "yahoo", from = "2024-01-01", to = "2025-01-01")
+
 
 # Extraction des prix ajustés
 prices <- merge(
@@ -17,17 +23,19 @@ prices <- merge(
   NVDA[, "NVDA.Adjusted"]
 )
 
-# Renommer les colonnes avec des noms respectifs
+# On renomme les colonnes avec des noms respectifs
 colnames(prices) <- c("apple", "walmart", "meta", "nvidia")
 
-# Calcul de la base 100
+
+####### Calcul de la base 100
+
 Apple_100 <- prices[, "apple"] / as.vector(prices[1, "apple"]) * 100
 Walmart_100 <- prices[, "walmart"] / as.vector(prices[1, "walmart"]) * 100
 Meta_100 <- prices[, "meta"] / as.vector(prices[1, "meta"]) * 100
 Nvidia_100 <- prices[, "nvidia"] / as.vector(prices[1, "nvidia"]) * 100
 
+
 # Création du graphique
-# Tracé des lignes
 plot(
   Apple_100, type = "l", col = "blue", lwd = 2,
   xlab = "Date", ylab = "Base 100", main = "Évolution des actions (Base 100)"
@@ -36,18 +44,22 @@ lines(Walmart_100, col = "purple", lwd = 2)
 lines(Meta_100, col = "cyan", lwd = 2)
 lines(Nvidia_100, col = "yellow")
 
-# Ajout de la légende avec fond blanc
+# Ajout de la légende
 legend("topleft",
        legend = c("Apple", "Walmart", "Meta", "Nvidia"),
        col = c("blue", "purple", "cyan", "yellow"),
        lty = 1, lwd = 2, cex = 0.8, bg = "white")
 
-#rendements
+
+
+####### Calcul des rendements
+
 returns <- na.omit(ROC(prices, type = "discrete"))
 colnames(returns) <- c("apple", "walmart", "meta", "nvidia")
 summary(returns)
 
-# Tracer les rendements
+
+# Graphique des rendements
 plot(
   returns[, "apple"], type = "l", col = "blue", ylim = range(returns),
   xlab = "Temps", ylab = "Rendements", main = "Rendements des actions"
@@ -61,9 +73,11 @@ addLegend("topright",on=1,
           col=c("blue","purple","cyan","yellow"),
           lty = 1:1, cex=0.8)
 
-# Calcul des moyennes et écarts-types
-mean_returns <- colMeans(returns)  # Moyennes
-std_returns <- apply(returns, 2, sd) # Écarts-types 
+
+# Calcul des moyennes et écarts-types pour les ratio de sharpe 
+
+mean_returns <- colMeans(returns)  
+std_returns <- apply(returns, 2, sd)
 
 cat("Moyennes annualisées des rendements :\n")
 print(mean_returns)
@@ -74,11 +88,13 @@ ratio_sharpe <- mean_returns/std_returns
 ratio_sharpe
 
 
-######## PROGRAMME D'OPTIMISATION
 
+################# PROGRAMME D'OPTIMISATION
+
+# on definit un rendement cible
 rendement_ciblé <- mean(mean_returns)
 
-# Matrices de variance-covariance et de corrélation
+# Matrices de variance-covariance et de corrélation pour le programme d'optimisation
 cov_matrix <- cov(returns)
 cor_matrix <- cor(returns)
 
@@ -87,7 +103,8 @@ print(cov_matrix)
 cat("Matrice de corrélation :\n")
 print(cor_matrix)
 
-# Étape 2 : Portefeuille à variance minimale
+
+###### optimisation
 n_assets <- ncol(returns)
 Dmat <- cov_matrix  # Matrice de covariance
 dvec <- rep(0, n_assets)  # Vecteur objectif pour minimiser la variance
@@ -104,12 +121,12 @@ cat("Portefeuille à variance minimale :\n")
 cat("Rendement attendu :", portfolio_return_min_var, "\n")
 cat("Risque attendu :", portfolio_risk_min_var, "\n")
 
-
+# calcul du ratio de sharpe
 sharpe_ratio <- (portfolio_return_min_var) / portfolio_risk_min_var
 sharpe_ratio
 
 
-# Étape 3 : Visualisation des résultats
+# Graphique pour une visualisation des résultats
 barplot(
   weights_min_var * 100,
   names.arg = tickers,
@@ -119,7 +136,11 @@ barplot(
 )
 round(weights_min_var * 100, 2)
 
-# Étape 1 : Calcul des moyennes et volatilités annualisées
+
+
+###### annualisation des résultats 
+
+# Calcul des moyennes et volatilités annualisées
 mean_returns_annualized <- (1 + mean_returns)^252 - 1  # Rendements quotidiens annualisés (composés)
 std_returns_annualized <- std_returns * sqrt(252)  # Écarts-types annualisés
 
@@ -128,7 +149,7 @@ portfolio_return_annualized <- (1 + portfolio_return_min_var)^252 - 1  # Rendeme
 portfolio_risk_annualized <- portfolio_risk_min_var * sqrt(252)  # Volatilité annuelle du portefeuille
 sharpe_ratio_annualized <- portfolio_return_annualized / portfolio_risk_annualized  # Ratio de Sharpe annuel
 
-# Étape 2 : Ajout d'une matrice des résultats
+# Ajout d'une matrice des résultats pour tout voir dans un tableau propre qui résume tout 
 results <- data.frame(
   Actif = c(tickers, "Portefeuille"),
   Poids = c(round(weights_min_var * 100, 2), 100),
@@ -137,32 +158,55 @@ results <- data.frame(
   Ratio_Sharpe = c(round(mean_returns_annualized / std_returns_annualized, 4), round(sharpe_ratio_annualized, 4))
 )
 
-# Affichage des résultats
 print(results)
 
 
-#comparaison des ratios de sharpe avec optimisation et sans optimisation
+
+#######comparaison des ratios de sharpe avec optimisation et sans optimisation
 
 sharpe_equal_weights <- mean(colMeans(returns)) / sqrt(mean(diag(cov_matrix)))
 cat("Ratio de Sharpe avec poids égaux :", round(sharpe_equal_weights, 4), "\n")
 
-# Allocation par actif pour un budget de 500 euros
+
+
+###### Calcul de la frontière efficiente de la théorie du portefeuille 
+
+portfolio_returns <- seq(min(mean_returns), max(mean_returns), length.out = 100)  # Rendements cibles
+portfolio_risks <- sapply(portfolio_returns, function(target_return) {
+  weights <- solve.QP(
+    Dmat = cov_matrix,
+    dvec = rep(0, n_assets),
+    Amat = cbind(rep(1, n_assets), mean_returns, diag(n_assets)),
+    bvec = c(1, target_return, rep(0, n_assets)),
+    meq = 2
+  )$solution
+  sqrt(t(weights) %*% cov_matrix %*% weights)  # Risque (écart-type)
+})
+
+# Calcul des coordonnées du portefeuille optimisé
+risk_optimized <- portfolio_risk_min_var
+return_optimized <- portfolio_return_min_var
+
+# Tracé de la frontière efficiente
+plot(
+  portfolio_risks, portfolio_returns, type = "l", col = "red", lwd = 2,
+  xlab = "Risque (Écart-Type)", ylab = "Rendement", main = "Frontière efficiente"
+)
+
+# Ajout du portefeuille optimisé
+points(risk_optimized, return_optimized, col = "blue", pch = 19, cex = 1.5)
+text(risk_optimized, return_optimized, labels = "Portefeuille Optimisé", pos = 4, col = "blue")
+
+legend(
+  "bottomright", legend = c("Frontière efficiente", "Portefeuille Optimisé"),
+  col = c("red", "blue"), lty = 1, pch = c(NA, 19), lwd = 2
+)
+
+
+
+
+###### Allocation par actif pour un budget de 500 euros
 allocation <- round(weights_min_var * 500, 2)
 names(allocation) <-c("apple", "walmart", "meta", "nvidia")
 print(allocation)
 
-
-# Téléchargement des données du S&P 500
-getSymbols("^GSPC", src = "yahoo", from = "2024-01-01", to = "2025-01-01")
-sp500 <- GSPC[, "GSPC.Adjusted"]
-
-# Calcul des rendements du S&P 500
-sp500_returns <- na.omit(ROC(sp500, type = "discrete"))
-colnames(sp500_returns) <- "sp500"
-
-# Fusion des rendements du S&P 500 avec les rendements des actions
-returns2 <- na.omit(merge(sp500_returns, returns))
-
-# Régression linéaire : S&P 500 en fonction des rendements des actions
-regression <- lm(sp500 ~ apple + walmart + meta + nvidia, data = returns2)
-summary(regression)
