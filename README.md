@@ -183,7 +183,8 @@ barplot(
 
 #ratio de sharpe du portefeuille 
 sharpe_ratio <- (portfolio_return_min_var) / portfolio_risk_min_var
-sharpe_ratio
+cat("\nRatio de Sharpe du portefeuille optimisé :\n")
+print(sharpe_ratio)
 ```
 le code de la fonction `barplot` crée un graphique en barres coloré qui montre comment les actions Apple, Walmart, Meta et Nvidia sont réparties dans un portefeuille optimisé pour minimiser le risque, en affichant leurs poids en pourcentage.
 l'allocation optimale est 4.86% pour Apple, 72.55% Walmart, 4.09% pour Meta et 18.51% Nvidia. 
