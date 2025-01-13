@@ -216,6 +216,6 @@ legend(
 allocation <- round(weights_min_var * 500, 2)
 names(allocation) <-c("apple", "walmart", "meta", "nvidia")
 
-cat("Allocation des actifs \n")
+cat("Allocation des actifs : \n")
 cat(paste(names(allocation), ":", allocation, collapse = "\n"), "\n")
 
