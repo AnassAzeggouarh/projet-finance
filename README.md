@@ -26,8 +26,19 @@ En étudiant ces entreprises sur la période 2024-2025, nous souhaitons mieux co
 Dans un premier temps, nous téléchargeons les librairies nécessaires et importons les données directement depuis Yahoo Finance pour constituer une base contenant les prix ajustés des actifs. Ensuite, nous renommons les colonnes afin d'utiliser les noms réels des entreprises, plutôt que les tickers Yahoo Finance. Puis pour finir avec les fonctions head et summary, nous observons les données d'un point de vue statistique.  
 
 ```{r, message=FALSE}
-library(quantmod)
-library(quadprog)
+if (!require("quantmod")) {
+  install.packages("quantmod", dependencies = TRUE)
+  library(quantmod)
+} else {
+  library(quantmod)
+}
+
+if (!require("quadprog")) {
+  install.packages("quadprog", dependencies = TRUE)
+  library(quadprog)
+} else {
+  library(quadprog)
+}
 
 #Télécharger les données des actifs via une commande qui importe tout de yahoo finance
 
