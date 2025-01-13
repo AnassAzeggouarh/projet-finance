@@ -14,7 +14,7 @@ Nous avons choisi ce sujet, car nous nous intéressons à la finance, et plus pa
 
 ### 1.2 Choix des variables à étudier
 
-Nous avons choisi Apple, Walmart, Meta et Nvidia pour cette étude, car ces entreprises reflètent des secteurs variés et issues du S&P 500. Apple, avec son innovation constante dans la tech grand public, représente une valeur sûre depuis des années. Walmart, leader de la grande distribution américaine, offre une stabilité liée à la consommation quotidienne. Meta, qui domine les réseaux sociaux et la publicité en ligne, incarne la croissance rapide du numérique. Enfin, Nvidia, acteur clé des semi-conducteurs et de l’intelligence artificielle, illustre le potentiel des technologies d’avenir. Apple se classe au deuxième rang mondial en termes de capitalisation boursière, juste derrière Nvidia. En étudiant ces entreprises sur la période 2024-2025, nous souhaitons mieux comprendre comment ces différents secteurs interagissent et se comportent face aux opportunités et aux risques. Cette période est également marquée par une forte hausse de 27 % du S&P 500 en 2025.
+Nous avons choisi Apple, Walmart, Meta et Nvidia pour cette étude, car ces entreprises reflètent des secteurs variés et issues du S&P 500. Apple, avec son innovation constante dans la tech grand public, représente une valeur sûre depuis des années. Walmart, leader de la grande distribution américaine, offre une stabilité liée à la consommation quotidienne. Meta, qui domine les réseaux sociaux et la publicité en ligne, incarne la croissance rapide du numérique. Enfin, Nvidia, acteur clé des semi-conducteurs et de l’intelligence artificielle, illustre le potentiel des technologies d’avenir. Apple se classe au deuxième rang mondial en termes de capitalisation boursière, juste derrière Nvidia. En étudiant ces entreprises sur la période 2024-2025, nous souhaitons mieux comprendre comment ces différents secteurs interagissent et se comportent face aux opportunités et aux risques. Cette période est également marquée par une forte hausse de 24/27 % du S&P 500 en 2025.
 
 
 ## 2. le modèle
@@ -97,7 +97,7 @@ On observe à travers le graphique que Nvidia est l’actif le plus volatile
 
 
 ### 2.4 ratio de sharpe/markowitz
-Nous allons maintenant calculer la moyenne des rendements de chaque actif ainsi que leur volatilité. Ces calculs nous permettront de déterminer le ratio de Sharpe (moyenne/variance), qui évalue le rapport entre le risque et le rendement de chaque actif. Ce ratio indique quel actif offre la meilleure performance compte tenu du risque.
+Nous allons maintenant calculer la moyenne des rendements de chaque actif ainsi que leur volatilité. Ces calculs nous permettront de déterminer le ratio de Sharpe (moyenne/écart-type), qui évalue le rapport entre le risque et le rendement de chaque actif. Ce ratio indique quel actif offre la meilleure performance compte tenu du risque.
 
 ```{r}
 mean_returns <- colMeans(returns)  
