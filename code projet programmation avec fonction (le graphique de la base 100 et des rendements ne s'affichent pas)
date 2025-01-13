@@ -1,0 +1,212 @@
+run_project <- function() {
+
+  
+  ############# Analyse quantitative des actions
+  
+  rm(list = ls())
+  
+  # Chargement des librairies nécessaires
+  library(quantmod)
+  library(quadprog)
+  
+  
+  # Télécharger les données des actifs
+  tickers <- c("AAPL", "WMT", "META", "NVDA")
+  getSymbols(tickers, src = "yahoo", from = "2024-01-01", to = "2025-01-01")
+  
+  
+  # Extraction des prix ajustés
+  prices <- merge(
+    AAPL[, "AAPL.Adjusted"],
+    WMT[, "WMT.Adjusted"],
+    META[, "META.Adjusted"],
+    NVDA[, "NVDA.Adjusted"]
+  )
+  
+  # On renomme les colonnes avec des noms respectifs
+  colnames(prices) <- c("apple", "walmart", "meta", "nvidia")
+  
+  
+  ####### Calcul de la base 100
+  
+  Apple_100 <- prices[, "apple"] / as.vector(prices[1, "apple"]) * 100
+  Walmart_100 <- prices[, "walmart"] / as.vector(prices[1, "walmart"]) * 100
+  Meta_100 <- prices[, "meta"] / as.vector(prices[1, "meta"]) * 100
+  Nvidia_100 <- prices[, "nvidia"] / as.vector(prices[1, "nvidia"]) * 100
+  
+  
+  # Création du graphique
+  plot(
+    Apple_100, type = "l", col = "blue", lwd = 2,
+    xlab = "Date", ylab = "Base 100", main = "Évolution des actions (Base 100)"
+  )
+  lines(Walmart_100, col = "purple", lwd = 2)
+  lines(Meta_100, col = "cyan", lwd = 2)
+  lines(Nvidia_100, col = "black")
+  
+  
+  # Ajout des légende
+  addLegend("topleft", on = 1,
+            legend.names = c("Apple", "Walmart", "Meta", "Nvidia"),
+            col = c("blue", "purple", "cyan", "black"),
+            lty = 1:1, cex = 0.8)
+  
+  
+  
+  ####### Calcul des rendements
+  
+  returns <- na.omit(ROC(prices, type = "discrete"))
+  colnames(returns) <- c("apple", "walmart", "meta", "nvidia")
+  summary(returns)
+  
+  
+  # Graphique des rendements
+  plot(
+    returns[, "apple"], type = "l", col = "blue", ylim = range(returns),
+    xlab = "Temps", ylab = "Rendements", main = "Rendements des actions"
+  )
+  lines(returns[, "walmart"], col = "purple")
+  lines(returns[, "meta"], col = "cyan")
+  lines(returns[, "nvidia"], col = "black")
+  
+  addLegend("topright", on = 1,
+            legend.names = c("Apple", "Walmart", "Meta", "Nvidia"),
+            col = c("blue", "purple", "cyan", "black"),
+            lty = 1:1, cex = 0.8)
+  
+  
+  # Calcul des moyennes et écarts-types pour le ratio de Sharpe
+  mean_returns <- colMeans(returns)
+  std_returns <- apply(returns, 2, sd)
+  
+  cat("Moyennes annualisées des rendements :\n")
+  print(mean_returns)
+  cat("Écarts-types annualisés des rendements :\n")
+  print(std_returns)
+  
+  ratio_sharpe <- mean_returns / std_returns
+  ratio_sharpe
+  
+  
+  
+  ################# PROGRAMME D'OPTIMISATION des actions
+  
+  # On définit un rendement cible
+  rendement_ciblé <- mean(mean_returns)
+  
+  # Matrices de variance-covariance et de corrélation pour le programme d'optimisation
+  cov_matrix <- cov(returns)
+  cor_matrix <- cor(returns)
+  
+  cat("Matrice de variance-covariance :\n")
+  print(cov_matrix)
+  cat("Matrice de corrélation :\n")
+  print(cor_matrix)
+  
+  
+  ###### optimisation
+  n_assets <- ncol(returns)
+  Dmat <- cov_matrix  # Matrice de covariance
+  dvec <- rep(0, n_assets)  # Vecteur objectif pour minimiser la variance
+  Amat <- cbind(rep(1, n_assets), mean_returns, diag(n_assets))  # Contraintes : somme des poids = 1, poids >= 0
+  bvec <- c(1, rendement_ciblé, rep(0, n_assets))  # Contraintes
+  opt <- solve.QP(Dmat, dvec, Amat, bvec, meq = 1)  # Optimisation
+  
+  weights_min_var <- opt$solution # Poids du portefeuille à variance minimale
+  
+  portfolio_return_min_var <- sum(weights_min_var * mean_returns)
+  portfolio_risk_min_var <- sqrt(t(weights_min_var) %*% cov_matrix %*% weights_min_var)
+  
+  cat("Portefeuille à variance minimale :\n")
+  cat("Rendement attendu :", portfolio_return_min_var, "\n")
+  cat("Risque attendu :", portfolio_risk_min_var, "\n")
+  
+  # Calcul du ratio de Sharpe
+  sharpe_ratio <- (portfolio_return_min_var) / portfolio_risk_min_var
+  sharpe_ratio
+  
+  
+  # Graphique pour une visualisation des résultats
+  barplot(
+    weights_min_var * 100,
+    names.arg = tickers,
+    col = rainbow(length(tickers)),
+    main = "Répartition des poids (Variance Minimale)",
+    ylab = "Poids (%)"
+  )
+  round(weights_min_var * 100, 2)
+  
+  
+  
+  ###### annualisation des résultats
+  
+  # Calcul des moyennes et volatilités annualisées
+  mean_returns_annualized <- (1 + mean_returns)^252 - 1  # Rendements quotidiens annualisés (composés)
+  std_returns_annualized <- std_returns * sqrt(252)  # Écarts-types annualisés
+  
+  # Calcul des performances annualisées du portefeuille
+  portfolio_return_annualized <- (1 + portfolio_return_min_var)^252 - 1  # Rendement annuel du portefeuille
+  portfolio_risk_annualized <- portfolio_risk_min_var * sqrt(252)  # Volatilité annuelle du portefeuille
+  sharpe_ratio_annualized <- portfolio_return_annualized / portfolio_risk_annualized  # Ratio de Sharpe annuel
+  
+  # Ajout d'une matrice des résultats pour tout voir dans un tableau propre qui résume tout
+  results <- data.frame(
+    Actif = c(tickers, "Portefeuille"),
+    Poids = c(round(weights_min_var * 100, 2), 100),
+    Rendements_Annuel = c(round(mean_returns_annualized, 4), round(portfolio_return_annualized, 4)),
+    Volatilité_Annuel = c(round(std_returns_annualized, 4), round(portfolio_risk_annualized, 4)),
+    Ratio_Sharpe = c(round(mean_returns_annualized / std_returns_annualized, 4), round(sharpe_ratio_annualized, 4))
+  )
+  
+  print(results)
+  
+  
+  
+  ####### comparaison des ratios de sharpe avec optimisation et sans optimisation
+  sharpe_equal_weights <- mean(colMeans(returns)) / sqrt(mean(diag(cov_matrix)))
+  cat("Ratio de Sharpe avec poids égaux :", round(sharpe_equal_weights, 4), "\n")
+  
+  
+  
+  ###### Calcul de la frontière efficiente de la théorie du portefeuille
+  
+  portfolio_returns <- seq(min(mean_returns), max(mean_returns), length.out = 100)  # Rendements cibles
+  portfolio_risks <- sapply(portfolio_returns, function(target_return) {
+    weights <- solve.QP(
+      Dmat = cov_matrix,
+      dvec = rep(0, n_assets),
+      Amat = cbind(rep(1, n_assets), mean_returns, diag(n_assets)),
+      bvec = c(1, target_return, rep(0, n_assets)),
+      meq = 2
+    )$solution
+    sqrt(t(weights) %*% cov_matrix %*% weights)  # Risque (écart-type)
+  })
+  
+  # Calcul des coordonnées du portefeuille optimisé
+  risk_optimized <- portfolio_risk_min_var
+  return_optimized <- portfolio_return_min_var
+  
+  # Tracé de la frontière efficiente
+  plot(
+    portfolio_risks, portfolio_returns, type = "l", col = "red", lwd = 2,
+    xlab = "Risque (Écart-Type)", ylab = "Rendement", main = "Frontière efficiente"
+  )
+  
+  # Ajout du portefeuille optimisé
+  points(risk_optimized, return_optimized, col = "blue", pch = 19, cex = 1.5)
+  text(risk_optimized, return_optimized, labels = "Portefeuille Optimisé", pos = 4, col = "blue")
+  
+  legend(
+    "bottomright", legend = c("Frontière efficiente", "Portefeuille Optimisé"),
+    col = c("red", "blue"), lty = 1, pch = c(NA, 19), lwd = 2
+  )
+  
+  
+  ###### Allocation par actif pour un budget de 500 euros
+  allocation <- round(weights_min_var * 500, 2)
+  names(allocation) <- c("apple", "walmart", "meta", "nvidia")
+  print(allocation)
+}
+
+
+run_project()
