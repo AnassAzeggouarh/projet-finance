@@ -4,10 +4,22 @@ run_project <- function() {
   ############# Analyse quantitative des actions
   
   rm(list = ls())
+
+
+  # Vérification et installation des packages nécessaires
+  if (!require("quantmod")) {
+    install.packages("quantmod", dependencies = TRUE)
+    library(quantmod)
+  } else {
+    library(quantmod)
+  }
   
-  # Chargement des librairies nécessaires
-  library(quantmod)
-  library(quadprog)
+  if (!require("quadprog")) {
+    install.packages("quadprog", dependencies = TRUE)
+    library(quadprog)
+  } else {
+    library(quadprog)
+  }
   
   
   # Télécharger les données des actifs
