@@ -85,9 +85,8 @@ run_project <- function() {
   print(std_returns)
   
   ratio_sharpe <- mean_returns / std_returns
-  ratio_sharpe
-  
-  
+  cat("\nRatio de Sharpe pour chaque actif :\n")
+  print(ratio_sharpe)
   
   ################# PROGRAMME D'OPTIMISATION des actions
   
