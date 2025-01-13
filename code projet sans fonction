@@ -124,7 +124,8 @@ cat("Risque attendu :", portfolio_risk_min_var, "\n")
 
 # calcul du ratio de sharpe
 sharpe_ratio <- (portfolio_return_min_var) / portfolio_risk_min_var
-sharpe_ratio
+cat("\nRatio de Sharpe pour chaque actif :\n")
+print(ratio_sharpe)
 
 
 # Graphique pour une visualisation des résultats
