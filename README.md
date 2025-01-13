@@ -290,9 +290,12 @@ Le point bleu correspond à notre portefeuille optimisé, à variance minimale, 
 
 ### 3.7 Allocation par actif pour un budget de 500 euros
 ```{r}
+###### Allocation par actif pour un budget de 500 euros
 allocation <- round(weights_min_var * 500, 2)
-names(allocation) <- c("apple", "walmart", "meta", "nvidia")
-print(allocation)
+names(allocation) <-c("apple", "walmart", "meta", "nvidia")
+
+cat("### Allocation des actifs ###\n")
+cat(paste(names(allocation), ":", allocation, collapse = "\n"), "\n")
 ```
 Ce code calcule l'allocation en dollars pour chaque action dans un portefeuille de 500 unités monétaires basé sur les poids à variance minimale. Les montants sont arrondis à deux décimales, puis associés aux noms des actions Apple, Walmart, Meta et Nvidia avant d'être affichés.
 Avec un budget de 500 euros, la majorité est investie dans Walmart (362,73 €) en raison de sa faible volatilité, suivi de Nvidia (92,53 €) pour son rendement élevé. Apple (24,31 €) et Meta (20,43 €) ont des allocations plus faibles, reflétant leur profil rendement/risque.
