@@ -2,9 +2,6 @@
 title: "Projet technique de programmation"
 author: "Anass Azeggouarh-Wallen et Mamadou Giuliano"
 date: "2025-01-09"
-output:
-  html_document: default
-  pdf_document: default
 ---
 
 # Construction d’un portefeuille optimisé en R 
@@ -13,12 +10,11 @@ output:
 ## 1. Présentation du sujet
 ### 1.1 choix du sujet et problématique
 
-Nous avons choisi ce sujet car nous nous intéressons à la finance, et plus particulièrement à l'essor de la finance quantitative. L'objectif est de comprendre comment optimiser les rendements tout en minimisant les risques liés à l'allocation des actifs, en appliquant des concepts d'optimisation quadratique et en utilisant le critère de moyenne/variance développé par Markowitz que nous avons un peu abordé dans le cours de comportements et incitations avec monsieur Donze.
-
+Nous avons choisi ce sujet, car nous nous intéressons à la finance, et plus particulièrement à l'essor de la finance quantitative. L'objectif est de comprendre comment optimiser les rendements tout en minimisant les risques liés à l'allocation des actifs, en appliquant des concepts d'optimisation quadratique et en utilisant le critère de moyenne/variance développé par Markowitz, que nous avons un peu abordé dans le cours de comportements et incitations avec monsieur Donze.
 
 ### 1.2 Choix des variables à étudier
 
-Nous avons choisi Apple, Walmart, Meta et Nvidia pour cette étude car ces entreprises reflètent des secteurs variés et complémentaires. Apple, avec son innovation constante dans la tech grand public, représente une valeur sûre. Walmart, leader de la grande distribution, offre une stabilité liée à la consommation quotidienne. Meta, qui domine les réseaux sociaux et la publicité en ligne, incarne la croissance rapide du numérique. Enfin, Nvidia, acteur clé des semi-conducteurs et de l’intelligence artificielle, illustre le potentiel des technologies d’avenir. Apple se classe au deuxième rang mondial en termes de capitalisation boursière, juste derrière Nvidia.En étudiant ces entreprises sur la période 2024-2025, nous souhaitons mieux comprendre comment ces différents secteurs interagissent et se comportent face aux opportunités et aux risques. Cette période est également marquée par une forte hausse de 27% du S&P 500 en 2025
+Nous avons choisi Apple, Walmart, Meta et Nvidia pour cette étude, car ces entreprises reflètent des secteurs variés et issues du S&P 500. Apple, avec son innovation constante dans la tech grand public, représente une valeur sûre depuis des années. Walmart, leader de la grande distribution américaine, offre une stabilité liée à la consommation quotidienne. Meta, qui domine les réseaux sociaux et la publicité en ligne, incarne la croissance rapide du numérique. Enfin, Nvidia, acteur clé des semi-conducteurs et de l’intelligence artificielle, illustre le potentiel des technologies d’avenir. Apple se classe au deuxième rang mondial en termes de capitalisation boursière, juste derrière Nvidia. En étudiant ces entreprises sur la période 2024-2025, nous souhaitons mieux comprendre comment ces différents secteurs interagissent et se comportent face aux opportunités et aux risques. Cette période est également marquée par une forte hausse de 27 % du S&P 500 en 2025.
 
 
 ## 2. le modèle
@@ -77,7 +73,7 @@ En 2024, NVIDIA a réalisé une performance exceptionnelle, enregistrant des ré
 
 ### 2.3 calcul des rendements et de la volatilité
 Nous allons maintenant calculer les rendements journaliers des actions ainsi que leur volatilité (écart-type des rendements) afin d'analyser statistiquement le comportement de ces actifs en 2024. Ensuite, nous représenterons graphiquement les rendements pour mieux visualiser leur évolution au cours de l'année.
-Le code calcule les rendements des actions (`returns`) en utilisant la méthode des rendements discrets via la fonction `ROC` (Rate of Change) et supprime les valeurs manquantes avec `na.omit`, avant de renommer les colonnes pour chaque action. Le graphique affiche l'évolution des rendements des actions dans le temps avec des lignes colorées, et une légende identifie chaque courbe.
+Le code calcule les rendements des actions (`returns`) en utilisant la méthode des rendements discrets via la fonction `ROC` et supprime les valeurs manquantes avec `na.omit`, avant de renommer les colonnes pour chaque action. Le graphique affiche l'évolution des rendements des actions dans le temps avec des lignes colorées, et une légende identifie chaque courbe.
 
 ```{r}
 returns <- na.omit(ROC(prices, type = "discrete"))
@@ -97,7 +93,7 @@ addLegend("topleft",on=1,
           col=c("blue","purple","cyan","yellow"),
           lty = 1:1, cex=0.8)
 ```
-on voit a travers le graphique que Meta est l'action la plus volatile des quatre.
+On observe à travers le graphique que Nvidia est l’actif le plus volatile
 
 
 ### 2.4 ratio de sharpe/markowitz
@@ -136,7 +132,7 @@ Le modèle d'optimisation moyenne-variance, créé par Harry Markowitz en 1952, 
 Ce modèle se base sur des données historiques pour estimer les rendements futurs et les interactions entre actifs.
 
 
-### 3.3 programme 
+### 3.3 programme d'optimisation
 
 Dans le programme d'optimisation, l'objectif était de minimiser le risque, mesuré par la variance du portefeuille, tout en respectant un rendement cible qui est la moyenne des rendements passés de tous les actifs. Pour cela, nous avons d'abord calculé la matrice de variance-covariance des rendements des actifs, qui mesure les interactions entre eux. Ensuite, nous avons défini un vecteur objectif nul, car l'objectif est uniquement de minimiser le risque, ainsi qu'une matrice de contraintes garantissant que la somme des poids des actifs est égale à 1, que les poids sont positifs (pas de ventes à découvert), et que le rendement du portefeuille atteint ou dépasse le seuil cible. L'optimisation quadratique a été réalisée à l'aide de la fonction `solve.QP`, qui minimise la variance du portefeuille sous ces contraintes. Enfin, les poids optimaux des actifs ont été calculés, permettant de déterminer les rendements attendus et le risque total du portefeuille optimisé. Cette approche combine des outils mathématiques et informatiques pour résoudre efficacement le problème d'optimisation moyenne-variance.
 
@@ -185,13 +181,22 @@ le code de la fonction `barplot` crée un graphique en barres coloré qui montre
 l'allocation optimale est 4.86% pour Apple, 72.55% Walmart, 4.09% pour Meta et 18.51% Nvidia. 
 Le rendement attendu du portefeuille est de 0.00263478, ce qui dépasse celui de toutes les actions, à l'exception de Nvidia. Par ailleurs, le risque du portefeuille, mesuré par une volatilité de 0.01063863, est inférieur à celle de tous les actifs pris individuellement. De plus, le ratio de Sharpe du portefeuille, évalué à 0.2476616, est nettement supérieur à tous les ratios individuels. Cela démontre l’efficacité de l’optimisation, qui a permis d’améliorer à la fois le rendement ajusté au risque et la diversification. 
 
+### 3.4 comparaison des ratios de sharpe avec optimisation et sans optimisation
+
+L’objectif est de comparer le ratio de Sharpe d’un portefeuille équipondéré avec celui d’un portefeuille optimisé. Pour le portefeuille équipondéré, on calcule le rendement moyen en répartissant également les investissements entre les actifs, et la volatilité en se basant uniquement sur les variances individuelles, sans considérer les corrélations. Le ratio de Sharpe, obtenu en divisant le rendement par la volatilité, permet d’évaluer la performance ajustée au risque d’un portefeuille non optimisé. Cette comparaison met en évidence l’intérêt d’une optimisation par rapport à une simple répartition égale.
+
+```{r}
+sharpe_equal_weights <- mean(colMeans(returns)) / sqrt(mean(diag(cov_matrix)))
+cat("Ratio de Sharpe avec poids égaux :", round(sharpe_equal_weights, 4), "\n")
+```
+Le ratio de Sharpe équipondéré (0.1195) est nettement inférieur à celui du portefeuille optimisé (0.2477). Cela montre que l’optimisation améliore significativement la performance ajustée au risque en ajustant les pondérations des actifs pour maximiser le rendement tout en minimisant la volatilité. En comparaison, la répartition égale ne profite pas pleinement des caractéristiques individuelles des actifs ni de leurs corrélations, ce qui explique son ratio de Sharpe plus faible.
 
 
-### 3.4 annualisation des résultats 
+### 3.5 annualisation des résultats 
 
 On va annualiser les résultats pour pouvoir comparer les performances des actifs et du portefeuille sur une base annuelle, ce qui est plus pratique. Pour cela, on transforme les rendements journaliers en rendements annuels en prenant en compte l’effet composé avec la formule \((1+R_{\text{quotidien}})^{252} - 1\), et on annualise la volatilité en la multipliant par \(\sqrt{252}\), qui correspond au nombre moyen de jours de bourse par an.
 
-Ensuite, on va construire un tableau récapitulatif. Ce tableau contiendra les rendements et volatilités annualisés pour chaque actif, ainsi que leurs poids optimaux dans le portefeuille. On y ajoutera aussi une ligne pour présenter les performances globales du portefeuille optimisé, ce qui permettra de comparer directement le portefeuille aux actifs individuels. Cette approche nous donne une vision claire et synthétique des performances.
+Ensuite, on consrtuit un tableau récapitulatif. Ce tableau contiendra les rendements et volatilités annualisés pour chaque actif, ainsi que leurs poids optimaux dans le portefeuille. On y ajoutera aussi une ligne pour présenter les performances globales du portefeuille optimisé, ce qui permettra de comparer directement le portefeuille aux actifs individuels. Cette approche nous donne une vision claire et synthétique des performances.
 
 ```{r}
 mean_returns_annualized <- (1 + mean_returns)^252 - 1  
@@ -215,18 +220,50 @@ print(results)
 L’optimisation a conduit à une forte pondération de Walmart (72,55%) en raison de sa faible volatilité (0.1770) et de son rendement élevé (0.7525), en faisant l’actif le plus défensif. Nvidia suit avec 18,50%, porté par son rendement très élevé (2.2059), malgré une volatilité plus importante (0.5251). Apple et Meta, moins performants en termes de rapport rendement/risque, occupent des poids plus modestes. Le portefeuille global atteint un rendement annuel de 94,08% avec une volatilité réduite à 16,89%, montrant l’effet bénéfique de la diversification. Avec un ratio de Sharpe exceptionnel de 5.5706, le portefeuille surpasse largement les ratios des autres actifs pris individuellement, ce qui montre l’efficacité de cette approche optimisée.
 
 
-
-### 3.5 comparaison des ratios de sharpe avec optimisation et sans optimisation
-
-L’objectif est de comparer le ratio de Sharpe d’un portefeuille équipondéré avec celui d’un portefeuille optimisé. Pour le portefeuille équipondéré, on calcule le rendement moyen en répartissant également les investissements entre les actifs, et la volatilité en se basant uniquement sur les variances individuelles, sans considérer les corrélations. Le ratio de Sharpe, obtenu en divisant le rendement par la volatilité, permet d’évaluer la performance ajustée au risque d’un portefeuille non optimisé. Cette comparaison met en évidence l’intérêt d’une optimisation par rapport à une simple répartition égale.
+### 3.6 frontière efficiente du portefeuille
 
 ```{r}
-sharpe_equal_weights <- mean(colMeans(returns)) / sqrt(mean(diag(cov_matrix)))
-cat("Ratio de Sharpe avec poids égaux :", round(sharpe_equal_weights, 4), "\n")
-```
-Le ratio de Sharpe équipondéré (0.1195) est nettement inférieur à celui du portefeuille optimisé (0.2477). Cela montre que l’optimisation améliore significativement la performance ajustée au risque en ajustant les pondérations des actifs pour maximiser le rendement tout en minimisant la volatilité. En comparaison, la répartition égale ne profite pas pleinement des caractéristiques individuelles des actifs ni de leurs corrélations, ce qui explique son ratio de Sharpe plus faible.
+# Étape 4 : Calcul de la frontière efficiente
+portfolio_returns <- seq(min(mean_returns), max(mean_returns), length.out = 100)  # Rendements cibles
+portfolio_risks <- sapply(portfolio_returns, function(target_return) {
+  weights <- solve.QP(
+    Dmat = cov_matrix,
+    dvec = rep(0, n_assets),
+    Amat = cbind(rep(1, n_assets), mean_returns, diag(n_assets)),
+    bvec = c(1, target_return, rep(0, n_assets)),
+    meq = 2
+  )$solution
+  sqrt(t(weights) %*% cov_matrix %*% weights)  # Risque (écart-type)
+})
 
-### 3.6 Allocation par actif pour un budget de 500 euros
+# Calcul des coordonnées du portefeuille optimisé
+risk_optimized <- portfolio_risk_min_var
+return_optimized <- portfolio_return_min_var
+
+# Étape 5 : Tracé de la frontière efficiente
+plot(
+  portfolio_risks, portfolio_returns, type = "l", col = "red", lwd = 2,
+  xlab = "Risque (Écart-Type)", ylab = "Rendement", main = "Frontière efficiente"
+)
+
+# Ajout du portefeuille optimisé
+points(risk_optimized, return_optimized, col = "blue", pch = 19, cex = 1.5)
+text(risk_optimized, return_optimized, labels = "Portefeuille Optimisé", pos = 4, col = "blue")
+
+# Ajout d'une légende
+legend(
+  "bottomright", legend = c("Frontière efficiente", "Portefeuille Optimisé"),
+  col = c("red", "blue"), lty = 1, pch = c(NA, 19), lwd = 2
+)
+
+```
+
+Ce graphique illustre la frontière efficiente selon la théorie de Markowitz. Tous les points situés sur la courbe rouge de la frontière efficiente sont considérés comme optimaux, car ils offrent le meilleur compromis possible entre le risque et le rendement pour un portefeuille donné. Ces portefeuilles maximisent soit le rendement attendu pour un niveau de risque donné, soit minimisent le risque pour un rendement cible.
+
+Le point bleu correspond à notre portefeuille optimisé, à variance minimale, qui minimise le risque tout en restant sur la frontière.
+
+
+### 3.7 Allocation par actif pour un budget de 500 euros
 ```{r}
 allocation <- round(weights_min_var * 500, 2)
 names(allocation) <- c("apple", "walmart", "meta", "nvidia")
@@ -234,7 +271,6 @@ print(allocation)
 ```
 Ce code calcule l'allocation en dollars pour chaque action dans un portefeuille de 500 unités monétaires basé sur les poids à variance minimale. Les montants sont arrondis à deux décimales, puis associés aux noms des actions Apple, Walmart, Meta et Nvidia avant d'être affichés.
 Avec un budget de 500 euros, la majorité est investie dans Walmart (362,73 €) en raison de sa faible volatilité, suivi de Nvidia (92,53 €) pour son rendement élevé. Apple (24,31 €) et Meta (20,43 €) ont des allocations plus faibles, reflétant leur profil rendement/risque.
-
 
 
 
@@ -246,8 +282,8 @@ Une autre faiblesse majeure du modèle est qu’il utilise des données historiq
 
 Le modèle accorde également le même poids aux rendements positifs et négatifs, ce qui ne reflète pas toujours les priorités des investisseurs, souvent plus soucieux de limiter leurs pertes que de maximiser leurs gains.
 
+L’une des limites du modèle de Markowitz est qu’il peut favoriser la concentration des investissements sur quelques actifs, en particulier lorsqu’on cherche à maximiser le ratio de Sharpe. Cela peut conduire à l’exclusion totale de certains actifs, réduisant ainsi la diversification.
+Dans notre cas, le portefeuille choisi, représenté par le point bleu sur la frontière efficiente, n’est pas le portefeuille tangent, qui maximise le ratio de Sharpe. Nous avons délibérément évité d’utiliser le portefeuille tangent pour éviter que certains actifs ne soient complètement exclus de l’optimisation, privilégiant ainsi une meilleure diversification. Ce portefeuille reste optimal selon la théorie de Markowitz, car il minimise le risque pour un rendement donné tout en assurant une répartition plus équilibrée des actifs.
+
 Malgré ces limites, le modèle de Markowitz a ouvert la voie à des approches plus modernes. Par exemple, le modèle de Black-Litterman intègre non seulement les données historiques, mais aussi les prévisions des investisseurs, offrant ainsi des allocations plus équilibrées et réalistes. D’autres avancées, comme les simulations Monte Carlo ou les optimisations prenant en compte les risques extrêmes, répondent aux défis des marchés actuels. Ces évolutions montrent que, bien que perfectible, le modèle de Markowitz reste une base solide pour comprendre et gérer les portefeuilles.
-
-Concernant les limites de notre présentation, nous n'avons pas abordé la frontière efficiente en raison d'un manque de connaissances approfondies sur le sujet. Nous avons choisi de ne pas traiter une théorie que nous ne maîtrisons pas suffisamment, bien qu'elle constitue une hypothèse fondamentale du modèle.
-
 
