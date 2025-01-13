@@ -203,7 +203,7 @@ En comparaison, la répartition égale ne profite pas pleinement des caractéris
 
 ### 3.5 Annualisation des résultats 
 
-On va annualiser les résultats pour pouvoir comparer les performances des actifs et du portefeuille sur une base annuelle, ce qui est plus pratique. Pour cela, on transforme les rendements journaliers en rendements annuels en prenant en compte l’effet composé avec la formule \((1+R_{\text{quotidien}})^{252} - 1\), et on annualise la volatilité en la multipliant par \(\sqrt{252}\), qui correspond au nombre moyen de jours de bourse par an.
+On va annualiser les résultats pour pouvoir comparer les performances des actifs et du portefeuille sur une base annuelle, ce qui est plus pratique. Pour cela, on transforme les rendements journaliers en rendements annuels en prenant en compte l’effet composé avec la formule ((1+Rendementsquotidien)^{252} - 1), et on annualise la volatilité en la multipliant par sqrt{252}, qui correspond au nombre moyen de jours de bourse par an.
 
 Ensuite, on consrtuit un tableau récapitulatif. Ce tableau contiendra les rendements et volatilités annualisés pour chaque actif, ainsi que leurs poids optimaux dans le portefeuille. 
 On y ajoutera aussi une ligne pour présenter les performances globales du portefeuille optimisé, ce qui permettra de comparer directement le portefeuille aux actifs individuels. 
