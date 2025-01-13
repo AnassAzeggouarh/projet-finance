@@ -26,6 +26,11 @@ prices <- merge(
 # On renomme les colonnes avec des noms respectifs
 colnames(prices) <- c("apple", "walmart", "meta", "nvidia")
 
+# vue d'ensemble sur les données des prix
+head(prices)
+summary(prices)
+
+
 
 ####### Calcul de la base 100
 
@@ -57,8 +62,10 @@ addLegend("topleft",on=1,
 
 returns <- na.omit(ROC(prices, type = "discrete"))
 colnames(returns) <- c("apple", "walmart", "meta", "nvidia")
-summary(returns)
 
+# vue d'ensemble sur les données des rendements
+head(returns)
+summary(returns)
 
 # Graphique des rendements
 plot(
