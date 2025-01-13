@@ -1,7 +1,7 @@
 ##########################version finale
 
 
-############# Analyse quantitative 
+############# Analyse quantitative des actions
 
 rm(list = ls())
 
@@ -42,13 +42,14 @@ plot(
 )
 lines(Walmart_100, col = "purple", lwd = 2)
 lines(Meta_100, col = "cyan", lwd = 2)
-lines(Nvidia_100, col = "yellow")
+lines(Nvidia_100, col = "black")
 
-# Ajout de la légende
-legend("topleft",
-       legend = c("Apple", "Walmart", "Meta", "Nvidia"),
-       col = c("blue", "purple", "cyan", "yellow"),
-       lty = 1, lwd = 2, cex = 0.8, bg = "white")
+
+# Ajout des légende
+addLegend("topleft",on=1,
+          legend.names=c("Apple","Walmart",'Meta','Nvidia'),
+          col=c("blue","purple","cyan","black"),
+          lty = 1:1, cex=0.8)
 
 
 
@@ -66,11 +67,11 @@ plot(
 )
 lines(returns[, "walmart"], col = "purple")
 lines(returns[, "meta"], col = "cyan")
-lines(returns[, "nvidia"], col = "yellow")
+lines(returns[, "nvidia"], col = "black")
 
 addLegend("topright",on=1,
           legend.names=c("Apple","Walmart",'Meta','Nvidia'),
-          col=c("blue","purple","cyan","yellow"),
+          col=c("blue","purple","cyan","black"),
           lty = 1:1, cex=0.8)
 
 
@@ -89,7 +90,7 @@ ratio_sharpe
 
 
 
-################# PROGRAMME D'OPTIMISATION
+################# PROGRAMME D'OPTIMISATION des actions
 
 # on definit un rendement cible
 rendement_ciblé <- mean(mean_returns)
