@@ -152,7 +152,10 @@ cat("Matrice de variance-covariance :\n")
 print(cov_matrix)
 cat("Matrice de corrélation :\n")
 print(cor_matrix)
+```
+Dans l'ensemble, les actifs ne sont pas vraiment corrélés entre eux. Toutefois, on remarque que Meta et Nvidia affichent une corrélation modérée d’environ 38 %, ce qui indique une légère relation entre leurs performances.
 
+```{r}
 n_assets <- ncol(returns)
 Dmat <- cov_matrix  
 dvec <- rep(0, n_assets)  
