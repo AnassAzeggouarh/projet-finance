@@ -96,7 +96,7 @@ addLegend("topleft",on=1,
 On observe à travers le graphique que Nvidia est l’actif le plus volatile
 
 
-### 2.4 ratio de sharpe/markowitz
+### 2.4 ratio de sharpe
 Nous allons maintenant calculer la moyenne des rendements de chaque actif ainsi que leur volatilité. Ces calculs nous permettront de déterminer le ratio de Sharpe (moyenne/écart-type), qui évalue le rapport entre le risque et le rendement de chaque actif. Ce ratio indique quel actif offre la meilleure performance compte tenu du risque.
 
 ```{r}
